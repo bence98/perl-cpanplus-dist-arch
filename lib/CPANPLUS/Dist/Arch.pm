@@ -805,7 +805,10 @@ Directory does not exist or is not writeable}
         unless ( -d $destdir && -w _ );
 
     my $pkgbuild_text = $self->get_pkgbuild();
-    my $fqpath        = catfile( $destdir, 'PKGBUILD' );
+	# Clean up annoying >=0's in the deptree...
+    my $regex      = qr/>=0(')/;
+    $pkgbuild_text =~ s/$regex/$1/g;
+    my $fqpath     = catfile( $destdir, 'PKGBUILD' );
 
     open my $pkgbuild_file, '>', $fqpath
         or die "failed to open new PKGBUILD: $OS_ERROR";
