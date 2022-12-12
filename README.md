@@ -6,9 +6,10 @@
 :  \____|_| /_/   \_\_| \_| |_|(_|_)____/|_|___/\__(_|_)_/   \_\_|  \___|_| |_|
 : 
 
-CPANPLUS::Dist::Arch - CPANPLUS backend for building Archlinux pacman packages
-
 [![CPANPLUS::Dist::Arch](https://github.com/jnbek/perl-cpanplus-dist-arch/actions/workflows/ci.yml/badge.svg)](https://github.com/jnbek/perl-cpanplus-dist-arch/actions/workflows/ci.yml)
+
+
+CPANPLUS::Dist::Arch - CPANPLUS backend for building Archlinux pacman packages
 
 * Background
 
