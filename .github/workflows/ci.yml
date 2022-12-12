@@ -1,4 +1,4 @@
-name: WWW::AUR
+name: CPANPLUS::Dist::Arch
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   build_and_test:
-    name: WWW::AUR
+    name: CPANPLUS::Dist::Arch
     runs-on: ubuntu-latest
 
     strategy:
