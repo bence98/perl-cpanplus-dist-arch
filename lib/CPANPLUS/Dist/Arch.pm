@@ -1582,7 +1582,7 @@ sub _scanmeta
 
     # Leave metareqs undef if there is no META.yml/META.json.
     my $path = _metapath($modobj) or return;    
-    my $meta = eval { Parse::CPAN::Meta::LoadFile($path) };
+    my $meta = eval { Parse::CPAN::Meta->load_file($path) };
     return unless ($meta);
 
     my $reqs = _metareqs($meta);
