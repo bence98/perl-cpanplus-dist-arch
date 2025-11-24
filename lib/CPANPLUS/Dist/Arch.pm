@@ -1563,7 +1563,7 @@ sub _metadesc
     my $d = $meta->{'abstract'} or return undef;
 
     # META.yml abstract entries we should ignore.
-    my @bad = ( q{~}, 'Module abstract (<= 44 characters) goes here' );
+    my @bad = ( q{~}, 'Module abstract (<= 44 characters) goes here', 'unknown' );
     for my $b ( @bad ) {
         return if ( $d eq $b );
     }
