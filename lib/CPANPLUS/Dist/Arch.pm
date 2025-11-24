@@ -162,7 +162,7 @@ package() {
   /usr/bin/perl Build install
 [% END -%]
 
-  find "$pkgdir" -name .packlist -o -name perllocal.pod -delete
+  find "$pkgdir" "(" -name .packlist -o -name perllocal.pod ")" -delete
 }
 
 # Local Variables:
