@@ -790,7 +790,7 @@ sub get_pkgbuild
           $dist_type eq 'CPANPLUS::Dist::Build' ? (0, 1) :
           die "unknown Perl module installer type: '$dist_type'" );
 
-    my $templ_text = $status->pkgbuild_templ || $PKGBUILD_TEMPL;
+    my $templ_text = $self->get_pkgbuild_templ;
 
     return scalar $self->_process_template( $templ_text, $templ_vars );
 }
