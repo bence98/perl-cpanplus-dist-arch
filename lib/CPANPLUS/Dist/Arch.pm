@@ -34,7 +34,7 @@ use Cwd                    qw();
 
 
 my $MKPKGCONF_FQP = '/etc/makepkg.conf';
-my $CPANURL       = 'http://search.cpan.org';
+my $CPANURL       = 'https://search.cpan.org';
 my $ROOT_USER_ID  = 0;
 
 my $CFG_VALUE_MATCH  = '\A \s* (%s) \s* = \s* (.*?) \s* (?: \#.* )? \z';
