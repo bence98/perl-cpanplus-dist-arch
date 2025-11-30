@@ -32,6 +32,7 @@ use Cwd                    qw();
 # CLASS CONSTANTS
 #-----------------------------------------------------------------------------
 
+my $PERL5_LIC = "'PerlArtistic' 'GPL'";
 
 my $MKPKGCONF_FQP = '/etc/makepkg.conf';
 my $CPANURL       = 'https://search.cpan.org';
@@ -79,6 +80,49 @@ TermReadKey    = perl-term-readkey
 
 END_OVERRIDES
 
+my $LICENSE_MAP =
+{ map { split /\s*=\s*/ } split /\s*\n+\s*/, <<'END_LICENSES' };
+
+perl_5      = 'PerlArtistic' 'GPL'
+
+apache_1_1  = 'Apache 1.1'
+apache_2_0  = 'Apache 2.0'
+artistic_1  = 'PerlArtistic'
+artistic_2  = 'Artistic2.0'
+agpl_3      = 'AGPL3'
+gpl_2       = 'GPL2'
+gpl_3       = 'GPL3'
+lgpl_2_1    = 'LGPL2'
+lgpl_3_0    = 'LGPL3'
+gfdl_1_2    = 'FDL1.2'
+gfdl_1_3    = 'FDL1.3'
+mozilla_1_0 = 'MPL 1.0'
+mozilla_1_1 = 'MPL 1.1'
+
+gpl_1       = 'custom:GPLv1'
+openssl     = 'custom:OpenSSL License'
+qpl_1_0     = 'custom:Q Public License, Version 1.0'
+ssleay      = 'custom:Original SSLeay License'
+sun         = 'custom:Sun Internet Standards Source License (SISSL)'
+
+bsd         = 'BSD'
+freebsd     = 'BSD'
+mit         = 'MIT'
+zlib        = 'ZLIB'
+
+perl        = 'PerlArtistic' 'GPL'
+apache      = 'Apache 2.0'
+artistic    = 'PerlArtistic'
+lgpl        = 'LGPL2'
+lgpl2       = 'LGPL2'
+lgpl3       = 'LGPL3'
+gpl         = 'GPL'
+gpl2        = 'GPL2'
+gpl3        = 'GPL3'
+mozilla     = 'MPL 1.1'
+
+END_LICENSES
+
 # This var tells us whether to use a template module or our internal code:
 my $TT_MOD_NAME;
 my @TT_MOD_SEARCH = qw/ Template Template::Alloy Template::Tiny /;
@@ -104,7 +148,7 @@ pkgver='[% pkgver %]'
 pkgrel='[% pkgrel %]'
 pkgdesc="[% pkgdesc %]"
 arch=([% arch %])
-license=('PerlArtistic' 'GPL')
+license=([% license %])
 options=('!emptydirs')
 depends=([% depends %])
 makedepends=([% makedepends %])
@@ -284,6 +328,7 @@ sub init
     $self->status->mk_accessors( qw{ pkgname  pkgver  pkgbase pkgdesc
                                      pkgurl   pkgsize arch    pkgrel
                                      builddir destdir metareqs
+                                     license
 
                                      pkgbuild_templ tt_init_args } );
 
@@ -689,6 +734,7 @@ sub get_pkgvars
                 pkgrel   => $status->pkgrel,
                 arch     => $status->arch,
                 pkgdesc  => $status->pkgdesc,
+                license  => $status->license,
                 url      => $self->_get_disturl,
                 source   => $self->_get_srcurl,
                 md5sums  => $self->_calc_tarballmd5,
@@ -1568,7 +1614,32 @@ sub _metadesc
         return if ( $d eq $b );
     }
     return $d;
-    
+}
+
+sub _metalic
+{
+    my ($meta) = @_;
+    my $lic_str = $meta->{'x_spdx_expression'} || "";
+
+    return "'$lic_str'" if $lic_str;
+
+    # Some very old, pre-standard metafiles don't have this key at all...
+    return unless $meta->{'license'};
+
+    # And depending on the spec version, it may be a string or an array
+    my $lics = ref $meta->{'license'} eq 'ARRAY' ?
+        $meta->{'license'} :
+        [$meta->{'license'}];
+
+    for my $l (@$lics) {
+        next unless $l;
+        $l = $LICENSE_MAP->{$l};
+        next unless $l;
+        $lic_str .= " " if $lic_str;
+        $lic_str .= "$l";
+    }
+
+    return $lic_str;
 }
 
 #--- PRIVATE METHOD ---
@@ -1587,8 +1658,10 @@ sub _scanmeta
 
     my $reqs = _metareqs($meta);
     my $desc = _metadesc($meta);
+    my $lic  = _metalic($meta);
     $status->metareqs($reqs);
     $status->pkgdesc($desc);
+    $status->license($lic) if $lic;
     return;
 }
 
@@ -1623,6 +1696,7 @@ sub _prepare_status
     $status->pkgver ( $pkgver  );
     $status->pkgbase( $pkgbase );
     $status->pkgrel (    1     );
+    $status->license($PERL5_LIC);
 
     $status->tt_init_args( {} );
 

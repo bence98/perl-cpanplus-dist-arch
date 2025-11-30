@@ -41,6 +41,7 @@ depends = 'perl>=5.010'
 distdir = Template-Tester-1.342
 is_makemaker = 0
 is_modulebuild = 1
+license = 'PerlArtistic' 'GPL'
 makedepends = 
 md5sums = 12345MD5SUM12345
 packager = $CPANPLUS::Dist::Arch::PACKAGER
