@@ -149,7 +149,7 @@ pkgrel='[% pkgrel %]'
 pkgdesc="[% pkgdesc %]"
 arch=([% arch %])
 license=([% license %])
-options=('!emptydirs')
+options=('!emptydirs' 'purge')
 depends=([% depends %])
 makedepends=([% makedepends %])
 [% IF checkdepends -%]
