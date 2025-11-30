@@ -164,6 +164,9 @@ md5sums=('[% md5sums %]')
 [% IF sha512sums -%]
 sha512sums=('[% sha512sums %]')
 [% END -%]
+[% IF b2sums -%]
+b2sums=('[% b2sums %]')
+[% END -%]
 _distdir="[% distdir %]"
 
 build() {
@@ -742,6 +745,9 @@ sub get_pkgvars
     );
     if (eval { require Digest::SHA }) {
         $vars{'sha512sums'} = $self->_calc_shasum(512);
+    }
+    if (eval { require Crypt::Digest::BLAKE2b_512 }) {
+        $vars{'b2sums'} = $self->_calc_b2sum();
     }
 
     $vars{$_} = _specstr($pkglinks->{$_}) for (qw/depends makedepends/);
@@ -1780,6 +1786,23 @@ sub _calc_shasum
     die "failed to get sha${size}sum of $fqp:\n$EVAL_ERROR";
 }
 
+#---INSTANCE METHOD---
+# Usage    : my $b2sum = $self->calc_b2sum();
+# Purpose  : Calculates the BLAKE2b 512-bit digest (b2sum).
+# Throws   : failed to get b2sum of <tarball>:\n...
+# Returns  : Hex-string checksum of the tarball.
+#---------------------
+sub _calc_b2sum
+{
+    my ($self) = @_;
+    my $module = $self->parent;
+    my $fqp    = $module->_status->fetch;
+    my $sum    = eval {
+        Crypt::Digest::BLAKE2b_512->new->addfile( $fqp )->hexdigest;
+    };
+    return $sum if $sum;
+    die "failed to get b2sum of $fqp:\n$EVAL_ERROR";
+}
 
 #---HELPER FUNCTION---
 # Purpose : Split the text into everything before the tags, inside tags, and
