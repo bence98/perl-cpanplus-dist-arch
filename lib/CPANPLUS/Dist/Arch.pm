@@ -827,6 +827,8 @@ sub get_pkgbuild
 
     my %pkgvars = $self->get_pkgvars;
 
+    # Trim extra whitespace
+    $pkgvars{pkgdesc} =~ s/\A\s+|\s+\z//g;
     # Quote our package desc for bash.
     $pkgvars{pkgdesc} =~ s/ ([\$\"\`]) /\\$1/gxms;
 
