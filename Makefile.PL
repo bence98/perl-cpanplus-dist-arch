@@ -24,7 +24,7 @@ WriteMakefile(
     'NAME' => 'CPANPLUS::Dist::Arch',
     'ABSTRACT' => 'CPANPLUS backend for building ArchLinux pacman packages',
     'AUTHOR' => 'John D Jones III <jnbek@cpan.org>',
-    'VERSION' => '1.32',
+    'VERSION' => '1.33',
     'LICENSE' => 'perl_5',
     'PREREQ_PM' => { @reqs },
     'META_ADD' => $meta,
